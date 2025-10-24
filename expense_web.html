@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Expense Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .day-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .day-label {
+            flex: 1;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input[type="number"] {
+            width: 120px;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: right;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .rupee {
+            margin-left: 10px;
+            font-size: 18px;
+            color: #666;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .btn-calculate {
+            background: #27ae60;
+            grid-column: span 2;
+        }
+
+        .btn-clear {
+            background: #e74c3c;
+        }
+
+        .btn-save {
+            background: #3498db;
+        }
+
+        .summary {
+            background: #f0f9ff;
+            border: 2px solid #3498db;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .summary-title {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .summary-text {
+            font-size: 20px;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        #chart {
+            width: 100%;
+            height: 250px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            💰 Expense Tracker
+        </div>
+
+        <div class="content">
+            <div id="inputs">
+                <!-- Days will be added by JavaScript -->
+            </div>
+
+            <div class="button-grid">
+                <button class="btn-calculate" onclick="calculate()">Calculate Summary</button>
+                <button class="btn-clear" onclick="clearAll()">Clear All</button>
+                <button class="btn-save" onclick="saveData()">Save Data</button>
+            </div>
+
+            <div class="summary">
+                <div class="summary-title">Weekly Summary</div>
+                <div id="summaryText" class="summary-text">Enter expenses and tap Calculate</div>
+            </div>
+
+            <canvas id="chart"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const sampleData = [350, 300, 500, 250, 400, 300, 350];
+        let myChart = null;
+
+        // Initialize inputs
+        function initInputs() {
+            const container = document.getElementById('inputs');
+            days.forEach((day, index) => {
+                const div = document.createElement('div');
+                div.className = 'day-input';
+                div.innerHTML = `
+                    <label class="day-label">${day}:</label>
+                    <input type="number" id="day${index}" value="${sampleData[index]}" min="0" step="0.01">
+                    <span class="rupee">₹</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Calculate summary
+        function calculate() {
+            const expenses = [];
+            for (let i = 0; i < 7; i++) {
+                const value = parseFloat(document.getElementById(`day${i}`).value) || 0;
+                expenses.push(value);
+            }
+
+            const total = expenses.reduce((a, b) => a + b, 0);
+            const average = total / 7;
+
+            document.getElementById('summaryText').innerHTML =
+                `Week: Total ₹${total.toLocaleString('en-IN', {maximumFractionDigits: 0})}, Avg/day: ₹${average.toFixed(0)}`;
+
+            updateChart(expenses);
+        }
+
+        // Update chart
+        function updateChart(data) {
+            const ctx = document.getElementById('chart').getContext('2d');
+
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: days.map(d => d.substr(0, 3)),
+                    datasets: [{
+                        label: 'Daily Expenses (₹)',
+                        data: data,
+                        backgroundColor: [
+                            '#3498db', '#e74c3c', '#f39c12',
+                            '#27ae60', '#9b59b6', '#e67e22', '#16a085'
+                        ],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                display: true,
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Clear all inputs
+        function clearAll() {
+            for (let i = 0; i < 7; i++) {
+                document.getElementById(`day${i}`).value = '';
+            }
+            document.getElementById('summaryText').innerHTML = 'Enter expenses and tap Calculate';
+            if (myChart) {
+                myChart.destroy();
+                myChart = null;
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            const expenses = [];
+            for (let i = 0; i < 7; i++) {
+                expenses.push(document.getElementById(`day${i}`).value || 0);
+            }
+            localStorage.setItem('expenses', JSON.stringify(expenses));
+            alert('Data saved successfully!');
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            initInputs();
+            calculate(); // Auto-calculate with sample data
+        }
+    </script>
+</body>
+</html>
