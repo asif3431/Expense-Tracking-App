@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Advanced Expense Tracker</title>
-    <!-- Chart.js Library -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Expense Tracker</title>
     <style>
         * {
             margin: 0;
@@ -21,7 +19,7 @@
         }
 
         .container {
-            max-width: 450px;
+            max-width: 400px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -30,21 +28,12 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            background: #2c3e50;
             color: white;
             padding: 20px;
             text-align: center;
             font-size: 24px;
             font-weight: bold;
-            position: relative;
-        }
-
-        .developer-info {
-            background: rgba(255,255,255,0.1);
-            padding: 5px;
-            font-size: 12px;
-            margin-top: 10px;
-            border-radius: 5px;
         }
 
         .content {
@@ -58,12 +47,6 @@
             background: #f8f9fa;
             padding: 10px;
             border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .day-input:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
         }
 
         .day-label {
@@ -79,13 +62,11 @@
             border-radius: 8px;
             font-size: 16px;
             text-align: right;
-            transition: all 0.3s ease;
         }
 
         input[type="number"]:focus {
             outline: none;
             border-color: #667eea;
-            background: #f0f4ff;
         }
 
         .rupee {
@@ -109,14 +90,7 @@
             font-weight: bold;
             color: white;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
         }
 
         button:active {
@@ -124,42 +98,30 @@
         }
 
         .btn-calculate {
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            background: #27ae60;
             grid-column: span 2;
         }
 
         .btn-clear {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            background: #e74c3c;
         }
 
         .btn-save {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: #3498db;
         }
 
         .btn-load {
-            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            background: #9b59b6;
             grid-column: span 2;
         }
 
         .summary {
-            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            background: #f0f9ff;
             border: 2px solid #3498db;
             border-radius: 15px;
             padding: 20px;
             margin: 20px 0;
             text-align: center;
-            animation: slideIn 0.5s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .summary-title {
@@ -173,83 +135,59 @@
             font-size: 20px;
             color: #27ae60;
             font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .summary-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .stat-box {
-            background: white;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: #7f8c8d;
-            margin-bottom: 5px;
-        }
-
-        .stat-value {
-            font-size: 16px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-
-        .chart-types {
-            display: flex;
-            gap: 5px;
-            margin: 15px 0;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .chart-btn {
-            padding: 8px 12px;
-            background: #ecf0f1;
-            border: 2px solid #bdc3c7;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: #2c3e50;
-            font-weight: 600;
-        }
-
-        .chart-btn.active {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            border-color: #3498db;
-            transform: scale(1.1);
-        }
-
-        .chart-btn:hover {
-            transform: scale(1.05);
         }
 
         #chartContainer {
             width: 100%;
             margin-top: 20px;
             background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            min-height: 300px;
-            position: relative;
+            border-radius: 10px;
+            padding: 15px;
         }
 
-        .chart-title {
-            text-align: center;
+        .chart-bar {
+            display: inline-block;
+            width: 40px;
+            margin: 0 5px;
+            background: #3498db;
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            vertical-align: bottom;
+        }
+
+        .chart-bars {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            margin-bottom: 10px;
+        }
+
+        .bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .bar-value {
+            font-size: 11px;
+            margin-bottom: 5px;
             font-weight: bold;
             color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 14px;
+        }
+
+        .bar {
+            width: 100%;
+            max-width: 40px;
+            border-radius: 5px 5px 0 0;
+            transition: all 0.3s ease;
+        }
+
+        .bar-label {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #666;
         }
 
         .saved-info {
@@ -257,101 +195,32 @@
             color: #666;
             font-size: 12px;
             margin-top: 10px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-
-        .insights {
-            background: linear-gradient(135deg, #fff9e6, #fff3cd);
-            border: 1px solid #ffc107;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-
-        .insights-title {
-            font-weight: bold;
-            color: #856404;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        .insight-item {
-            font-size: 12px;
-            color: #856404;
-            margin: 5px 0;
-            padding-left: 15px;
-            position: relative;
-        }
-
-        .insight-item:before {
-            content: "•";
-            position: absolute;
-            left: 0;
-        }
-
-        canvas {
-            max-height: 300px !important;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            💰 Advanced Expense Tracker
-            <div class="developer-info">
-                Developed by: Asif | Multi-Chart Analytics
-            </div>
+            💰 Family Expense Tracker
         </div>
 
         <div class="content">
             <div id="inputs"></div>
 
             <div class="button-grid">
-                <button class="btn-calculate" onclick="calculate()">📊 Calculate Summary</button>
-                <button class="btn-clear" onclick="clearAll()">🗑️ Clear All</button>
-                <button class="btn-save" onclick="saveData()">💾 Save Data</button>
-                <button class="btn-load" onclick="loadData()">📂 Load Saved Data</button>
+                <button class="btn-calculate" onclick="calculate()">Calculate Summary</button>
+                <button class="btn-clear" onclick="clearAll()">Clear All</button>
+                <button class="btn-save" onclick="saveData()">Save Data</button>
+                <button class="btn-load" onclick="loadData()">Load Saved Data</button>
             </div>
 
             <div class="summary">
                 <div class="summary-title">Weekly Summary</div>
                 <div id="summaryText" class="summary-text">Enter expenses and tap Calculate</div>
-                <div class="summary-details" id="summaryDetails" style="display:none;">
-                    <div class="stat-box">
-                        <div class="stat-label">Highest Day</div>
-                        <div class="stat-value" id="highestDay">-</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Lowest Day</div>
-                        <div class="stat-value" id="lowestDay">-</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Variance</div>
-                        <div class="stat-value" id="variance">-</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="insights" id="insights" style="display:none;">
-                <div class="insights-title">📈 Spending Insights</div>
-                <div id="insightsList"></div>
-            </div>
-
-            <div class="chart-types">
-                <button class="chart-btn active" onclick="switchChart('bar')">📊 Bar</button>
-                <button class="chart-btn" onclick="switchChart('pie')">🥧 Pie</button>
-                <button class="chart-btn" onclick="switchChart('line')">📈 Line</button>
-                <button class="chart-btn" onclick="switchChart('doughnut')">🍩 Doughnut</button>
-                <button class="chart-btn" onclick="switchChart('area')">📉 Area</button>
-                <button class="chart-btn" onclick="switchChart('radar')">🎯 Radar</button>
-                <button class="chart-btn" onclick="switchChart('polar')">🎨 Polar</button>
             </div>
 
             <div id="chartContainer">
-                <div class="chart-title" id="chartTitle">Bar Chart Analysis</div>
-                <canvas id="myChart"></canvas>
+                <div class="chart-bars" id="chartBars"></div>
             </div>
 
             <div class="saved-info" id="savedInfo"></div>
@@ -362,19 +231,7 @@
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         const daysShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
         const sampleData = [350, 300, 500, 250, 400, 300, 350];
-        const chartColors = [
-            'rgba(52, 152, 219, 0.8)',  // Blue
-            'rgba(231, 76, 60, 0.8)',   // Red
-            'rgba(243, 156, 18, 0.8)',  // Orange
-            'rgba(39, 174, 96, 0.8)',   // Green
-            'rgba(155, 89, 182, 0.8)',  // Purple
-            'rgba(230, 126, 34, 0.8)',  // Dark Orange
-            'rgba(22, 160, 133, 0.8)'   // Turquoise
-        ];
-
-        let currentChart = null;
-        let currentChartType = 'bar';
-        let currentData = [];
+        const barColors = ['#3498db', '#e74c3c', '#f39c12', '#27ae60', '#9b59b6', '#e67e22', '#16a085'];
 
         function initInputs() {
             const container = document.getElementById('inputs');
@@ -391,6 +248,7 @@
                 container.appendChild(div);
             });
 
+            // Check if there's saved data
             checkSavedData();
         }
 
@@ -401,179 +259,108 @@
                 expenses.push(value);
             }
 
-            currentData = expenses;
-
             const total = expenses.reduce((a, b) => a + b, 0);
             const average = total / 7;
 
-            // Main summary
+            // Format exactly as required
             document.getElementById('summaryText').innerHTML =
                 `Week: Total ₹${Math.round(total).toLocaleString('en-IN')}, Avg/day: ₹${Math.round(average)}`;
 
-            // Additional statistics
-            const maxValue = Math.max(...expenses);
-            const minValue = Math.min(...expenses);
-            const maxIndex = expenses.indexOf(maxValue);
-            const minIndex = expenses.indexOf(minValue);
-            const variance = maxValue - minValue;
-
-            document.getElementById('highestDay').textContent = `${daysShort[maxIndex]} (₹${maxValue})`;
-            document.getElementById('lowestDay').textContent = `${daysShort[minIndex]} (₹${minValue})`;
-            document.getElementById('variance').textContent = `₹${variance}`;
-            document.getElementById('summaryDetails').style.display = 'grid';
-
-            // Generate insights
-            generateInsights(expenses, average, maxIndex, minIndex);
-
-            // Draw the current chart type
-            drawChart(currentChartType, expenses);
+            // Draw the chart
+            drawBarChart(expenses);
         }
 
-        function generateInsights(expenses, average, maxIndex, minIndex) {
-            const insights = [];
+        function drawBarChart(data) {
+            const container = document.getElementById('chartBars');
+            container.innerHTML = '';
 
-            // Weekend vs Weekday analysis
-            const weekdayAvg = (expenses[0] + expenses[1] + expenses[2] + expenses[3] + expenses[4]) / 5;
-            const weekendAvg = (expenses[5] + expenses[6]) / 2;
+            const maxValue = Math.max(...data, 100);
 
-            if (weekendAvg > weekdayAvg) {
-                insights.push(`Weekend spending (₹${Math.round(weekendAvg)}) is higher than weekdays (₹${Math.round(weekdayAvg)})`);
-            } else {
-                insights.push(`Weekday spending (₹${Math.round(weekdayAvg)}) is higher than weekends (₹${Math.round(weekendAvg)})`);
-            }
+            data.forEach((value, index) => {
+                const barWrapper = document.createElement('div');
+                barWrapper.className = 'bar-wrapper';
 
-            // Highest day insight
-            insights.push(`Highest expense on ${days[maxIndex]} - consider budgeting`);
+                const barHeight = (value / maxValue) * 180; // 180px is max height
 
-            // Above average days
-            const aboveAvgDays = expenses.filter(e => e > average).length;
-            insights.push(`${aboveAvgDays} days are above average spending`);
+                barWrapper.innerHTML = `
+                    <div class="bar-value">₹${Math.round(value)}</div>
+                    <div class="bar" style="height: ${barHeight}px; background: ${barColors[index]};"></div>
+                    <div class="bar-label">${daysShort[index]}</div>
+                `;
 
-            // Savings opportunity
-            const potential = expenses.reduce((sum, e) => sum + Math.max(0, e - average), 0);
-            if (potential > 0) {
-                insights.push(`Potential savings: ₹${Math.round(potential)} if high-spend days match average`);
-            }
-
-            const insightsList = document.getElementById('insightsList');
-            insightsList.innerHTML = insights.map(i => `<div class="insight-item">${i}</div>`).join('');
-            document.getElementById('insights').style.display = 'block';
-        }
-
-        function switchChart(type) {
-            currentChartType = type;
-
-            // Update active button
-            document.querySelectorAll('.chart-btn').forEach(btn => {
-                btn.classList.remove('active');
+                container.appendChild(barWrapper);
             });
-            event.target.classList.add('active');
+        }
 
-            // Update chart title
-            const titles = {
-                bar: 'Bar Chart Analysis',
-                pie: 'Pie Chart - Expense Distribution',
-                line: 'Line Chart - Weekly Trend',
-                doughnut: 'Doughnut Chart - Proportional View',
-                area: 'Area Chart - Cumulative View',
-                radar: 'Radar Chart - Pattern Analysis',
-                polar: 'Polar Area Chart - Magnitude Comparison'
-            };
-            document.getElementById('chartTitle').textContent = titles[type];
-
-            // Redraw chart
-            if (currentData.length > 0) {
-                drawChart(type, currentData);
+        function clearAll() {
+            if (confirm('Clear all expenses?')) {
+                for (let i = 0; i < 7; i++) {
+                    document.getElementById(`day${i}`).value = '';
+                }
+                document.getElementById('summaryText').innerHTML = 'Enter expenses and tap Calculate';
+                document.getElementById('chartBars').innerHTML = '';
+                document.getElementById('savedInfo').innerHTML = '';
             }
         }
 
-        function drawChart(type, data) {
-            // Destroy existing chart
-            if (currentChart) {
-                currentChart.destroy();
+        function saveData() {
+            const expenses = [];
+            for (let i = 0; i < 7; i++) {
+                const value = document.getElementById(`day${i}`).value || '0';
+                expenses.push(value);
             }
 
-            const ctx = document.getElementById('myChart').getContext('2d');
+            // Save to localStorage
+            localStorage.setItem('expenseData', JSON.stringify(expenses));
+            localStorage.setItem('savedDate', new Date().toLocaleString());
 
-            const baseConfig = {
-                labels: daysShort,
-                datasets: [{
-                    label: 'Daily Expenses (₹)',
-                    data: data,
-                    backgroundColor: chartColors,
-                    borderColor: chartColors.map(c => c.replace('0.8', '1')),
-                    borderWidth: 2,
-                    fill: type === 'area' ? true : false,
-                    tension: type === 'line' || type === 'area' ? 0.4 : 0
-                }]
-            };
+            // Show confirmation
+            document.getElementById('savedInfo').innerHTML =
+                `✅ Data saved on ${new Date().toLocaleString()}`;
 
-            let config = {
-                type: type === 'area' ? 'line' : type,
-                data: baseConfig,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: type === 'pie' || type === 'doughnut' || type === 'polar',
-                            position: 'bottom'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.parsed.y || context.parsed || 0;
-                                    const total = data.reduce((a, b) => a + b, 0);
-                                    const percentage = ((value / total) * 100).toFixed(1);
-                                    return `${label}: ₹${value} (${percentage}%)`;
-                                }
-                            }
-                        }
-                    }
-                }
-            };
+            alert('Data saved successfully! Use "Load Saved Data" button to retrieve it anytime.');
+        }
 
-            // Specific configurations for different chart types
-            if (type === 'bar') {
-                config.options.scales = {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return '₹' + value;
-                            }
-                        }
-                    }
-                };
-            } else if (type === 'line' || type === 'area') {
-                config.options.scales = {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return '₹' + value;
-                            }
-                        }
-                    }
-                };
-                if (type === 'area') {
-                    config.data.datasets[0].backgroundColor = 'rgba(52, 152, 219, 0.2)';
-                }
-            } else if (type === 'pie' || type === 'doughnut') {
-                config.data.labels = days;
-                delete config.data.datasets[0].borderColor;
-                delete config.data.datasets[0].borderWidth;
-            } else if (type === 'radar') {
-                config.options.scales = {
-                    r: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return '₹' + value;
-                            }
-                        }
-                    }
-                };
-                config.data.datasets[0].backgroundColor = 'rgba(52, 152, 219, 0.2)';
-                config.data.datasets[0].borderColor = 'rgba(52, 152, 219, 1)';
+        function loadData() {
+            const savedData = localStorage.getItem('expenseData');
+            const savedDate = localStorage.getItem('savedDate');
+
+            if (savedData) {
+                const expenses = JSON.parse(savedData);
+
+                // Fill the input fields
+                expenses.forEach((value, index) => {
+                    document.getElementById(`day${index}`).value = value;
+                });
+
+                // Show when it was saved
+                document.getElementById('savedInfo').innerHTML =
+                    `📅 Loaded data from: ${savedDate || 'Previous session'}`;
+
+                // Auto calculate
+                calculate();
+
+                alert(`Data loaded successfully!\nSaved on: ${savedDate || 'Previous session'}`);
+            } else {
+                alert('No saved data found. Please save data first using the "Save Data" button.');
+            }
+        }
+
+        function checkSavedData() {
+            const savedData = localStorage.getItem('expenseData');
+            const savedDate = localStorage.getItem('savedDate');
+
+            if (savedData) {
+                document.getElementById('savedInfo').innerHTML =
+                    `💾 Previous data available from: ${savedDate || 'Previous session'}`;
+            }
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            initInputs();
+            calculate(); // Auto-calculate with sample data
+        }
+    </script>
+</body>
+</html>
