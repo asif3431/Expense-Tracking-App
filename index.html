@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExpenseTracker Pro - Categorized Expense Management</title>
+    <title>ExpenseTracker Pro - Easy Expense Management</title>
     
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -38,7 +38,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 20px 10px;
         }
 
         .container {
@@ -119,67 +119,149 @@
             opacity: 0.9;
         }
 
-        /* Expense Entry Section */
-        .expense-entry {
-            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
-            border: 2px dashed var(--primary);
-        }
-
-        .expense-day {
+        /* NEW IMPROVED EXPENSE ENTRY SECTION */
+        .expense-tabs {
+            display: flex;
+            gap: 5px;
             margin-bottom: 20px;
-            padding: 15px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background: var(--light);
+            padding: 5px;
+            border-radius: 12px;
+            overflow-x: auto;
         }
 
-        .day-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            font-weight: bold;
-            color: var(--primary);
-            font-size: 1.1rem;
-        }
-
-        .expense-items {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .expense-item {
-            display: grid;
-            grid-template-columns: 2fr 1fr auto;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .category-select {
-            padding: 10px;
-            border: 2px solid #e2e8f0;
+        .day-tab {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px;
+            background: transparent;
+            border: none;
             border-radius: 8px;
-            font-size: 1rem;
-            background: white;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--gray);
+            white-space: nowrap;
         }
 
-        .category-select:focus {
-            outline: none;
+        .day-tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 3px 10px rgba(91, 33, 182, 0.3);
+        }
+
+        .day-tab:hover:not(.active) {
+            background: white;
+            color: var(--primary);
+        }
+
+        .day-emoji {
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .expense-content {
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .expense-content.active {
+            display: block;
+        }
+
+        .expense-form {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .quick-category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .category-btn {
+            padding: 15px;
+            background: white;
+            border: 2px solid var(--light);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+        }
+
+        .category-btn:hover {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(91, 33, 182, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .category-btn.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(91, 33, 182, 0.1), rgba(124, 58, 237, 0.1));
+        }
+
+        .category-btn.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--success);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .category-icon {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .category-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .amount-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .amount-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .amount-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .amount-input {
-            padding: 10px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
+            flex: 1;
+            padding: 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: 3px solid var(--light);
+            border-radius: 12px;
+            text-align: center;
+            color: var(--primary);
             transition: all 0.3s ease;
         }
 
@@ -189,54 +271,133 @@
             box-shadow: 0 0 0 3px rgba(91, 33, 182, 0.1);
         }
 
-        .add-item-btn {
-            padding: 8px 12px;
-            background: var(--success);
-            color: white;
-            border: none;
-            border-radius: 6px;
+        .quick-amount-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quick-amount-btn {
+            padding: 10px;
+            background: var(--light);
+            border: 2px solid transparent;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
             transition: all 0.3s ease;
         }
 
-        .add-item-btn:hover {
-            background: #059669;
-            transform: scale(1.1);
+        .quick-amount-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
         }
 
-        .remove-item-btn {
-            padding: 6px 10px;
+        .expense-list {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .expense-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 2px solid var(--light);
+            transition: all 0.3s ease;
+            animation: slideIn 0.3s ease;
+        }
+
+        .expense-item:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .expense-item-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .expense-item-icon {
+            font-size: 1.5rem;
+        }
+
+        .expense-item-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .expense-item-category {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .expense-item-amount {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .delete-btn {
+            padding: 8px 12px;
             background: var(--danger);
             color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9rem;
             transition: all 0.3s ease;
         }
 
-        .remove-item-btn:hover {
+        .delete-btn:hover {
             background: #dc2626;
+            transform: scale(1.1);
         }
 
-        /* Category Colors */
-        .category-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
+        .add-expense-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
             font-weight: 600;
-            margin: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .category-food { background: #fef3c7; color: #92400e; }
-        .category-fuel { background: #dbeafe; color: #1e40af; }
-        .category-medical { background: #fce7f3; color: #9f1239; }
-        .category-hotel { background: #ede9fe; color: #6b21a8; }
-        .category-rent { background: #ccfbf1; color: #065f46; }
-        .category-fees { background: #fee2e2; color: #991b1b; }
-        .category-other { background: #e5e7eb; color: #374151; }
+        .add-expense-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .add-expense-btn:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .day-total {
+            background: linear-gradient(135deg, rgba(91, 33, 182, 0.1), rgba(124, 58, 237, 0.1));
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
 
         /* Buttons */
         .button-group {
@@ -275,9 +436,9 @@
             color: white;
         }
 
-        .btn-success:hover {
-            background: #059669;
-            transform: translateY(-2px);
+        .btn-warning {
+            background: var(--warning);
+            color: white;
         }
 
         .btn-danger {
@@ -285,47 +446,11 @@
             color: white;
         }
 
-        .btn-danger:hover {
-            background: #dc2626;
-            transform: translateY(-2px);
-        }
-
-        .btn-warning {
-            background: var(--warning);
-            color: white;
-        }
-
-        .btn-warning:hover {
-            background: #d97706;
-            transform: translateY(-2px);
-        }
-
         /* Chart Container */
         .chart-container {
             position: relative;
             height: 400px;
             margin-top: 20px;
-        }
-
-        .chart-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .tab-btn {
-            padding: 8px 16px;
-            background: var(--light);
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .tab-btn.active {
-            background: var(--primary);
-            color: white;
         }
 
         /* Category Summary */
@@ -350,82 +475,10 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .category-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .category-name {
-            font-size: 0.9rem;
-            color: var(--gray);
-            margin-bottom: 5px;
-        }
-
         .category-amount {
             font-size: 1.25rem;
             font-weight: bold;
             color: var(--primary);
-        }
-
-        /* Summary */
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-        }
-
-        .summary-item {
-            background: var(--light);
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .summary-label {
-            font-size: 0.85rem;
-            color: var(--gray);
-            margin-bottom: 5px;
-        }
-
-        .summary-value {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        /* PDF Preview Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 20px;
-            border-radius: 12px;
-            width: 80%;
-            max-width: 600px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-        }
-
-        .close {
-            color: var(--gray);
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover {
-            color: var(--dark);
         }
 
         /* Animations */
@@ -451,29 +504,90 @@
             }
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .close {
+            color: var(--gray);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
             
-            .expense-item {
-                grid-template-columns: 1fr;
-                gap: 8px;
+            .quick-category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .quick-amount-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
             
             .stats-grid {
                 grid-template-columns: 1fr;
             }
             
-            .category-summary {
-                grid-template-columns: repeat(2, 1fr);
+            .expense-tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
             }
+            
+            .day-tab {
+                min-width: 80px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Scrollbar */
+        .expense-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .expense-list::-webkit-scrollbar-track {
+            background: var(--light);
+            border-radius: 10px;
+        }
+
+        .expense-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -497,19 +611,25 @@
             </div>
             <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #059669);">
                 <div class="stat-value" id="totalItems">0</div>
-                <div class="stat-label">Total Items</div>
+                <div class="stat-label">Total Entries</div>
             </div>
         </div>
 
         <!-- Input Card -->
         <div class="card">
             <h2 class="card-title">
-                <span>📊</span>
-                Enter Categorized Expenses
+                <span>📝</span>
+                Add Your Expenses
             </h2>
             
-            <div class="expense-entry" id="expenseEntry">
-                <!-- Days will be generated here -->
+            <!-- Day Tabs -->
+            <div class="expense-tabs">
+                <!-- Tabs will be generated here -->
+            </div>
+
+            <!-- Expense Content for each day -->
+            <div id="expenseContents">
+                <!-- Content will be generated here -->
             </div>
 
             <div class="button-group">
@@ -543,46 +663,12 @@
         <!-- Chart Card -->
         <div class="card" id="chartCard">
             <h2 class="card-title">
-                <span>📈</span>
+                <span>📊</span>
                 Visual Analytics
             </h2>
             
-            <div class="chart-tabs">
-                <button class="tab-btn active" onclick="switchChart('bar')">Daily Total</button>
-                <button class="tab-btn" onclick="switchChart('pie')">Category Distribution</button>
-                <button class="tab-btn" onclick="switchChart('line')">Trend Line</button>
-                <button class="tab-btn" onclick="switchChart('doughnut')">Category Donut</button>
-            </div>
-            
             <div class="chart-container">
                 <canvas id="myChart"></canvas>
-            </div>
-        </div>
-
-        <!-- Summary Card -->
-        <div class="card">
-            <h2 class="card-title">
-                <span>📋</span>
-                Weekly Summary
-            </h2>
-            
-            <div class="summary-grid">
-                <div class="summary-item">
-                    <div class="summary-label">Highest Day</div>
-                    <div class="summary-value" id="maxDay">-</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-label">Lowest Day</div>
-                    <div class="summary-value" id="minDay">-</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-label">Most Spent Category</div>
-                    <div class="summary-value" id="topCategory">-</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-label">Weekend Total</div>
-                    <div class="summary-value" id="weekendTotal">₹0</div>
-                </div>
             </div>
         </div>
     </div>
@@ -594,8 +680,8 @@
             <h2>📄 Exporting to PDF</h2>
             <p id="pdfStatus">Preparing your expense report...</p>
             <div style="text-align: center; margin-top: 20px;">
-                <div id="pdfProgress" style="width: 100%; background: #e5e7eb; border-radius: 10px; height: 10px;">
-                    <div style="width: 0%; background: var(--primary); height: 100%; border-radius: 10px; transition: width 0.5s;"></div>
+                <div style="width: 100%; background: #e5e7eb; border-radius: 10px; height: 10px;">
+                    <div id="pdfProgress" style="width: 0%; background: var(--primary); height: 100%; border-radius: 10px; transition: width 0.5s;"></div>
                 </div>
             </div>
         </div>
@@ -604,7 +690,7 @@
     <script>
         // Data Structure
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        const emojis = ['🌙', '💪', '🐪', '⚡', '🎉', '🏖️', '☀️'];
+        const dayEmojis = ['🌙', '💪', '⚡', '🚀', '🎉', '🏖️', '☀️'];
         const categories = {
             'food': { name: 'Food', icon: '🍔', color: '#fbbf24' },
             'fuel': { name: 'Fuel', icon: '⛽', color: '#3b82f6' },
@@ -612,61 +698,25 @@
             'hotel': { name: 'Hotel', icon: '🏨', color: '#8b5cf6' },
             'rent': { name: 'Rent', icon: '🏠', color: '#10b981' },
             'fees': { name: 'Fees', icon: '💵', color: '#ef4444' },
+            'shopping': { name: 'Shopping', icon: '🛍️', color: '#f59e0b' },
+            'entertainment': { name: 'Entertainment', icon: '🎬', color: '#06b6d4' },
+            'transport': { name: 'Transport', icon: '🚌', color: '#64748b' },
             'other': { name: 'Other', icon: '📦', color: '#6b7280' }
         };
         
+        // Quick amounts for easy selection
+        const quickAmounts = [50, 100, 200, 500, 1000, 2000, 5000, 10000];
+        
         let expenseData = {};
+        let currentDay = 'Monday';
+        let currentCategory = '';
         let myChart = null;
-        let categoryChart = null;
 
-        // Initialize expense data structure
-        function initializeData() {
-            days.forEach((day, index) => {
-                if (!expenseData[day]) {
-                    expenseData[day] = [];
-                }
-            });
+        // Initialize
+        function init() {
+            initializeData();
+            initializeTabs();
+            initializeExpenseContents();
+            loadData();
+            switchDay('Monday');
         }
-
-        // Initialize expense entry form
-        function initializeExpenseEntry() {
-            const container = document.getElementById('expenseEntry');
-            container.innerHTML = '';
-            
-            days.forEach((day, index) => {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'expense-day';
-                dayDiv.innerHTML = `
-                    <div class="day-header">
-                        <span>${emojis[index]}</span>
-                        <span>${day}</span>
-                    </div>
-                    <div class="expense-items" id="items-${day}">
-                        ${expenseData[day].map((item, itemIndex) => createExpenseItemHTML(day, itemIndex, item)).join('')}
-                    </div>
-                    <button class="add-item-btn" onclick="addExpenseItem('${day}')">+</button>
-                `;
-                container.appendChild(dayDiv);
-            });
-            
-            // Add at least one item per day if empty
-            days.forEach(day => {
-                if (expenseData[day].length === 0) {
-                    addExpenseItem(day);
-                }
-            });
-        }
-
-        // Create expense item HTML
-        function createExpenseItemHTML(day, index, item = {}) {
-            return `
-                <div class="expense-item">
-                    <select class="category-select" id="category-${day}-${index}" onchange="updateCategory('${day}', ${index})">
-                        <option value="">Select Category</option>
-                        ${Object.keys(categories).map(cat => 
-                            `<option value="${cat}" ${item.category === cat ? 'selected' : ''}>
-                                ${categories[cat].icon} ${categories[cat].name}
-                            </option>`
-                        ).join('')}
-                    </select>
-                    <input type="number"
