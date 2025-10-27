@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExpenseTracker Pro - Simple & Powerful</title>
+    <title>ExpenseTracker Pro - Categorized Expense Management</title>
     
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <!-- jsPDF for PDF export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- html2canvas for capturing charts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
         * {
@@ -18,8 +21,21 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #5b21b6;
+            --primary-light: #7c3aed;
+            --secondary: #06b6d4;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light: #f1f5f9;
+            --white: #ffffff;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
@@ -35,285 +51,281 @@
             text-align: center;
             color: white;
             margin-bottom: 30px;
+            animation: fadeInDown 0.5s ease;
         }
 
         .header h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        /* Card */
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Cards */
         .card {
             background: white;
-            border-radius: 15px;
-            padding: 25px;
+            border-radius: 16px;
+            padding: 24px;
             margin-bottom: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.5s ease;
         }
 
         .card-title {
             font-size: 1.5rem;
-            color: #1e293b;
+            color: var(--dark);
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--light);
             padding-bottom: 10px;
-            border-bottom: 2px solid #e5e7eb;
         }
 
-        /* Stats */
-        .stats-container {
+        /* Stats Grid */
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
 
-        .stat-box {
-            background: white;
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 12px;
             text-align: center;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
         }
 
         .stat-value {
             font-size: 2rem;
             font-weight: bold;
-            color: #5b21b6;
-        }
-
-        .stat-label {
-            color: #6b7280;
-            margin-top: 5px;
-        }
-
-        /* Day Selection */
-        .day-selector {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .day-btn {
-            padding: 12px;
-            background: #f3f4f6;
-            border: 2px solid transparent;
-            border-radius: 10px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.3s;
-            font-weight: 600;
-        }
-
-        .day-btn:hover {
-            background: #e5e7eb;
-        }
-
-        .day-btn.active {
-            background: #5b21b6;
-            color: white;
-            border-color: #5b21b6;
-        }
-
-        /* Expense Form */
-        .expense-form {
-            background: #f9fafb;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #374151;
-        }
-
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 10px;
-        }
-
-        .category-item {
-            padding: 10px;
-            background: white;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .category-item:hover {
-            border-color: #5b21b6;
-            transform: translateY(-2px);
-        }
-
-        .category-item.selected {
-            background: #5b21b6;
-            color: white;
-            border-color: #5b21b6;
-        }
-
-        .category-icon {
-            font-size: 1.5rem;
             margin-bottom: 5px;
         }
 
-        .category-name {
-            font-size: 0.85rem;
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Expense Entry Section */
+        .expense-entry {
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 2px dashed var(--primary);
+        }
+
+        .expense-day {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .day-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .expense-items {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .expense-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .category-select {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(91, 33, 182, 0.1);
         }
 
         .amount-input {
-            width: 100%;
-            padding: 12px;
-            font-size: 1.2rem;
-            border: 2px solid #e5e7eb;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
             border-radius: 8px;
-            text-align: center;
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
         .amount-input:focus {
             outline: none;
-            border-color: #5b21b6;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(91, 33, 182, 0.1);
         }
 
-        .quick-amounts {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
-
-        .quick-btn {
-            padding: 8px 15px;
-            background: #e5e7eb;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .quick-btn:hover {
-            background: #5b21b6;
-            color: white;
-        }
-
-        .add-btn {
-            width: 100%;
-            padding: 15px;
-            background: #10b981;
+        .add-item-btn {
+            padding: 8px 12px;
+            background: var(--success);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
         }
 
-        .add-btn:hover {
+        .add-item-btn:hover {
             background: #059669;
+            transform: scale(1.1);
         }
 
-        .add-btn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        /* Expense List */
-        .expense-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .expense-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            background: #f9fafb;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-
-        .expense-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .expense-amount {
-            font-weight: bold;
-            color: #5b21b6;
-        }
-
-        .delete-btn {
-            padding: 6px 12px;
-            background: #ef4444;
+        .remove-item-btn {
+            padding: 6px 10px;
+            background: var(--danger);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
         }
 
-        .delete-btn:hover {
+        .remove-item-btn:hover {
             background: #dc2626;
         }
 
+        /* Category Colors */
+        .category-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 2px;
+        }
+
+        .category-food { background: #fef3c7; color: #92400e; }
+        .category-fuel { background: #dbeafe; color: #1e40af; }
+        .category-medical { background: #fce7f3; color: #9f1239; }
+        .category-hotel { background: #ede9fe; color: #6b21a8; }
+        .category-rent { background: #ccfbf1; color: #065f46; }
+        .category-fees { background: #fee2e2; color: #991b1b; }
+        .category-other { background: #e5e7eb; color: #374151; }
+
         /* Buttons */
-        .action-buttons {
+        .button-group {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+            margin-top: 20px;
         }
 
         .btn {
-            padding: 12px 20px;
+            padding: 12px 24px;
             border: none;
             border-radius: 8px;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-primary {
-            background: #5b21b6;
+            background: var(--primary);
             color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(91, 33, 182, 0.3);
         }
 
         .btn-success {
-            background: #10b981;
+            background: var(--success);
             color: white;
         }
 
-        .btn-warning {
-            background: #f59e0b;
-            color: white;
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
         }
 
         .btn-danger {
-            background: #ef4444;
+            background: var(--danger);
             color: white;
         }
 
-        .btn:hover {
+        .btn-danger:hover {
+            background: #dc2626;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        /* Chart */
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+
+        /* Chart Container */
         .chart-container {
             position: relative;
             height: 400px;
             margin-top: 20px;
+        }
+
+        .chart-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            background: var(--light);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
         }
 
         /* Category Summary */
@@ -321,32 +333,145 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
+            margin-top: 20px;
         }
 
         .category-card {
-            background: #f9fafb;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid var(--light);
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .category-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .category-name {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+
+        .category-amount {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* Summary */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .summary-item {
+            background: var(--light);
             padding: 15px;
             border-radius: 8px;
             text-align: center;
         }
 
-        .category-total {
-            font-size: 1.2rem;
+        .summary-label {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+
+        .summary-value {
+            font-size: 1.25rem;
             font-weight: bold;
-            color: #5b21b6;
+            color: var(--primary);
+        }
+
+        /* PDF Preview Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .close {
+            color: var(--gray);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--dark);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 1.8rem;
+                font-size: 2rem;
             }
             
-            .day-selector {
-                grid-template-columns: repeat(2, 1fr);
+            .expense-item {
+                grid-template-columns: 1fr;
+                gap: 8px;
             }
             
-            .category-grid {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-summary {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
@@ -357,302 +482,191 @@
         <!-- Header -->
         <div class="header">
             <h1>💰 ExpenseTracker Pro</h1>
-            <p>Simple, Fast, and Powerful Expense Management</p>
+            <p>Track your categorized weekly expenses</p>
         </div>
 
-        <!-- Stats -->
-        <div class="stats-container">
-            <div class="stat-box">
-                <div class="stat-value" id="totalStat">₹0</div>
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalExpense">₹0</div>
                 <div class="stat-label">Total Expenses</div>
             </div>
-            <div class="stat-box">
-                <div class="stat-value" id="avgStat">₹0</div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                <div class="stat-value" id="avgExpense">₹0</div>
                 <div class="stat-label">Daily Average</div>
             </div>
-            <div class="stat-box">
-                <div class="stat-value" id="countStat">0</div>
-                <div class="stat-label">Total Entries</div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #059669);">
+                <div class="stat-value" id="totalItems">0</div>
+                <div class="stat-label">Total Items</div>
             </div>
         </div>
 
-        <!-- Main Input Card -->
+        <!-- Input Card -->
         <div class="card">
-            <h2 class="card-title">📝 Add Expense</h2>
+            <h2 class="card-title">
+                <span>📊</span>
+                Enter Categorized Expenses
+            </h2>
             
-            <!-- Day Selection -->
-            <div class="form-group">
-                <label class="form-label">Select Day:</label>
-                <div class="day-selector" id="daySelector"></div>
+            <div class="expense-entry" id="expenseEntry">
+                <!-- Days will be generated here -->
             </div>
 
-            <!-- Expense Form -->
-            <div class="expense-form">
-                <!-- Category Selection -->
-                <div class="form-group">
-                    <label class="form-label">Choose Category:</label>
-                    <div class="category-grid" id="categoryGrid"></div>
-                </div>
-
-                <!-- Amount Input -->
-                <div class="form-group">
-                    <label class="form-label">Enter Amount (₹):</label>
-                    <input type="number" 
-                           class="amount-input" 
-                           id="amountInput" 
-                           placeholder="0"
-                           min="0">
-                    <div class="quick-amounts">
-                        <button class="quick-btn" onclick="setAmount(50)">₹50</button>
-                        <button class="quick-btn" onclick="setAmount(100)">₹100</button>
-                        <button class="quick-btn" onclick="setAmount(200)">₹200</button>
-                        <button class="quick-btn" onclick="setAmount(500)">₹500</button>
-                        <button class="quick-btn" onclick="setAmount(1000)">₹1000</button>
-                        <button class="quick-btn" onclick="setAmount(2000)">₹2000</button>
-                        <button class="quick-btn" onclick="setAmount(5000)">₹5000</button>
-                    </div>
-                </div>
-
-                <!-- Add Button -->
-                <button class="add-btn" onclick="addExpense()">➕ Add Expense</button>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <button class="btn btn-primary" onclick="calculate()">📊 Calculate</button>
-                <button class="btn btn-success" onclick="saveData()">💾 Save</button>
-                <button class="btn btn-warning" onclick="exportPDF()">📄 Export PDF</button>
-                <button class="btn btn-danger" onclick="clearAll()">🗑️ Clear All</button>
-            </div>
-        </div>
-
-        <!-- Expense List Card -->
-        <div class="card">
-            <h2 class="card-title">📋 Expense List</h2>
-            <div id="currentDayLabel" style="margin-bottom: 15px; font-weight: 600; color: #5b21b6;"></div>
-            <div class="expense-list" id="expenseList"></div>
-            <div style="margin-top: 15px; padding: 15px; background: #f3f4f6; border-radius: 8px; text-align: center;">
-                <strong>Day Total: </strong>
-                <span id="dayTotal" style="font-size: 1.2rem; color: #5b21b6;">₹0</span>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="calculate()">
+                    <span>📊</span> Calculate
+                </button>
+                <button class="btn btn-success" onclick="saveData()">
+                    <span>💾</span> Save Data
+                </button>
+                <button class="btn btn-warning" onclick="exportPDF()">
+                    <span>📄</span> Export PDF
+                </button>
+                <button class="btn btn-danger" onclick="clearAll()">
+                    <span>🗑️</span> Clear All
+                </button>
             </div>
         </div>
 
         <!-- Category Summary Card -->
         <div class="card">
-            <h2 class="card-title">📊 Category Summary</h2>
-            <div class="category-summary" id="categorySummary"></div>
+            <h2 class="card-title">
+                <span>📈</span>
+                Category Breakdown
+            </h2>
+            
+            <div class="category-summary" id="categorySummary">
+                <!-- Category cards will be generated here -->
+            </div>
         </div>
 
         <!-- Chart Card -->
-        <div class="card">
-            <h2 class="card-title">📈 Visual Analytics</h2>
+        <div class="card" id="chartCard">
+            <h2 class="card-title">
+                <span>📈</span>
+                Visual Analytics
+            </h2>
+            
+            <div class="chart-tabs">
+                <button class="tab-btn active" onclick="switchChart('bar')">Daily Total</button>
+                <button class="tab-btn" onclick="switchChart('pie')">Category Distribution</button>
+                <button class="tab-btn" onclick="switchChart('line')">Trend Line</button>
+                <button class="tab-btn" onclick="switchChart('doughnut')">Category Donut</button>
+            </div>
+            
             <div class="chart-container">
-                <canvas id="chartCanvas"></canvas>
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Summary Card -->
+        <div class="card">
+            <h2 class="card-title">
+                <span>📋</span>
+                Weekly Summary
+            </h2>
+            
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-label">Highest Day</div>
+                    <div class="summary-value" id="maxDay">-</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Lowest Day</div>
+                    <div class="summary-value" id="minDay">-</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Most Spent Category</div>
+                    <div class="summary-value" id="topCategory">-</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Weekend Total</div>
+                    <div class="summary-value" id="weekendTotal">₹0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF Export Modal -->
+    <div id="pdfModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePDFModal()">&times;</span>
+            <h2>📄 Exporting to PDF</h2>
+            <p id="pdfStatus">Preparing your expense report...</p>
+            <div style="text-align: center; margin-top: 20px;">
+                <div id="pdfProgress" style="width: 100%; background: #e5e7eb; border-radius: 10px; height: 10px;">
+                    <div style="width: 0%; background: var(--primary); height: 100%; border-radius: 10px; transition: width 0.5s;"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Configuration
+        // Data Structure
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        const categories = [
-            { id: 'food', name: 'Food', icon: '🍔' },
-            { id: 'fuel', name: 'Fuel', icon: '⛽' },
-            { id: 'medical', name: 'Medical', icon: '💊' },
-            { id: 'hotel', name: 'Hotel', icon: '🏨' },
-            { id: 'rent', name: 'Rent', icon: '🏠' },
-            { id: 'fees', name: 'Fees', icon: '💵' },
-            { id: 'shopping', name: 'Shopping', icon: '🛍️' },
-            { id: 'transport', name: 'Transport', icon: '🚌' },
-            { id: 'entertainment', name: 'Entertainment', icon: '🎬' },
-            { id: 'other', name: 'Other', icon: '📦' }
-        ];
+        const emojis = ['🌙', '💪', '🐪', '⚡', '🎉', '🏖️', '☀️'];
+        const categories = {
+            'food': { name: 'Food', icon: '🍔', color: '#fbbf24' },
+            'fuel': { name: 'Fuel', icon: '⛽', color: '#3b82f6' },
+            'medical': { name: 'Medical', icon: '💊', color: '#ec4899' },
+            'hotel': { name: 'Hotel', icon: '🏨', color: '#8b5cf6' },
+            'rent': { name: 'Rent', icon: '🏠', color: '#10b981' },
+            'fees': { name: 'Fees', icon: '💵', color: '#ef4444' },
+            'other': { name: 'Other', icon: '📦', color: '#6b7280' }
+        };
+        
+        let expenseData = {};
+        let myChart = null;
+        let categoryChart = null;
 
-        // State
-        let expenses = {};
-        let selectedDay = 'Monday';
-        let selectedCategory = '';
-        let chart = null;
-
-        // Initialize
-        function init() {
-            // Initialize expense data structure
-            days.forEach(day => {
-                if (!expenses[day]) {
-                    expenses[day] = [];
+        // Initialize expense data structure
+        function initializeData() {
+            days.forEach((day, index) => {
+                if (!expenseData[day]) {
+                    expenseData[day] = [];
                 }
             });
+        }
 
-            // Create day selector
-            const daySelector = document.getElementById('daySelector');
-            days.forEach(day => {
-                const btn = document.createElement('button');
-                btn.className = 'day-btn';
-                btn.textContent = day;
-                btn.onclick = () => selectDay(day);
-                if (day === selectedDay) btn.classList.add('active');
-                daySelector.appendChild(btn);
-            });
-
-            // Create category grid
-            const categoryGrid = document.getElementById('categoryGrid');
-            categories.forEach(cat => {
-                const item = document.createElement('div');
-                item.className = 'category-item';
-                item.innerHTML = `
-                    <div class="category-icon">${cat.icon}</div>
-                    <div class="category-name">${cat.name}</div>
+        // Initialize expense entry form
+        function initializeExpenseEntry() {
+            const container = document.getElementById('expenseEntry');
+            container.innerHTML = '';
+            
+            days.forEach((day, index) => {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'expense-day';
+                dayDiv.innerHTML = `
+                    <div class="day-header">
+                        <span>${emojis[index]}</span>
+                        <span>${day}</span>
+                    </div>
+                    <div class="expense-items" id="items-${day}">
+                        ${expenseData[day].map((item, itemIndex) => createExpenseItemHTML(day, itemIndex, item)).join('')}
+                    </div>
+                    <button class="add-item-btn" onclick="addExpenseItem('${day}')">+</button>
                 `;
-                item.onclick = () => selectCategory(cat.id, item);
-                categoryGrid.appendChild(item);
+                container.appendChild(dayDiv);
             });
-
-            // Load saved data
-            loadData();
             
-            // Update display
-            updateExpenseList();
-            updateStats();
-        }
-
-        // Select day
-        function selectDay(day) {
-            selectedDay = day;
-            document.querySelectorAll('.day-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent === day) {
-                    btn.classList.add('active');
+            // Add at least one item per day if empty
+            days.forEach(day => {
+                if (expenseData[day].length === 0) {
+                    addExpenseItem(day);
                 }
             });
-            updateExpenseList();
         }
 
-        // Select category
-        function selectCategory(catId, element) {
-            selectedCategory = catId;
-            document.querySelectorAll('.category-item').forEach(item => {
-                item.classList.remove('selected');
-            });
-            element.classList.add('selected');
-        }
-
-        // Set amount
-        function setAmount(amount) {
-            document.getElementById('amountInput').value = amount;
-        }
-
-        // Add expense
-        function addExpense() {
-            const amount = parseFloat(document.getElementById('amountInput').value);
-            
-            if (!selectedCategory) {
-                alert('Please select a category!');
-                return;
-            }
-            
-            if (!amount || amount <= 0) {
-                alert('Please enter a valid amount!');
-                return;
-            }
-
-            // Add to expenses
-            expenses[selectedDay].push({
-                category: selectedCategory,
-                amount: amount,
-                timestamp: new Date().toISOString()
-            });
-
-            // Clear form
-            document.getElementById('amountInput').value = '';
-            document.querySelectorAll('.category-item').forEach(item => {
-                item.classList.remove('selected');
-            });
-            selectedCategory = '';
-
-            // Update displays
-            updateExpenseList();
-            updateStats();
-            
-            // Show success
-            const btn = document.querySelector('.add-btn');
-            btn.textContent = '✅ Added!';
-            btn.style.background = '#10b981';
-            setTimeout(() => {
-                btn.textContent = '➕ Add Expense';
-                btn.style.background = '';
-            }, 1000);
-        }
-
-        // Update expense list
-        function updateExpenseList() {
-            const list = document.getElementById('expenseList');
-            const dayExpenses = expenses[selectedDay] || [];
-            
-            document.getElementById('currentDayLabel').textContent = `${selectedDay}'s Expenses`;
-            
-            if (dayExpenses.length === 0) {
-                list.innerHTML = '<div style="text-align: center; color: #9ca3af; padding: 20px;">No expenses for this day</div>';
-            } else {
-                list.innerHTML = dayExpenses.map((exp, index) => {
-                    const category = categories.find(c => c.id === exp.category);
-                    return `
-                        <div class="expense-item">
-                            <div class="expense-info">
-                                <span style="font-size: 1.5rem;">${category ? category.icon : '❓'}</span>
-                                <div>
-                                    <div style="font-weight: 600;">${category ? category.name : 'Unknown'}</div>
-                                    <div class="expense-amount">₹${exp.amount.toLocaleString('en-IN')}</div>
-                                </div>
-                            </div>
-                            <button class="delete-btn" onclick="deleteExpense(${index})">Delete</button>
-                        </div>
-                    `;
-                }).join('');
-            }
-
-            // Update day total
-            const dayTotal = dayExpenses.reduce((sum, exp) => sum + exp.amount, 0);
-            document.getElementById('dayTotal').textContent = `₹${dayTotal.toLocaleString('en-IN')}`;
-        }
-
-        // Delete expense
-        function deleteExpense(index) {
-            if (confirm('Delete this expense?')) {
-                expenses[selectedDay].splice(index, 1);
-                updateExpenseList();
-                updateStats();
-            }
-        }
-
-        // Update stats
-        function updateStats() {
-            let total = 0;
-            let count = 0;
-
-            days.forEach(day => {
-                expenses[day].forEach(exp => {
-                    total += exp.amount;
-                    count++;
-                });
-            });
-
-            document.getElementById('totalStat').textContent = `₹${total.toLocaleString('en-IN')}`;
-            document.getElementById('avgStat').textContent = `₹${Math.round(total / 7).toLocaleString('en-IN')}`;
-            document.getElementById('countStat').textContent = count;
-        }
-
-        // Calculate and show analytics
-        function calculate() {
-            updateStats();
-            updateCategorySummary();
-            drawChart();
-        }
-
-        // Update category summary
-        function updateCategorySummary() {
-            const summary = {};
-            
-            // Calculate totals by category
-            days.forEach(day => {
-                expenses[day].forEach(exp => {
-                    summary[exp.category] = (summary[exp.category] || 0) + exp.am
+        // Create expense item HTML
+        function createExpenseItemHTML(day, index, item = {}) {
+            return `
+                <div class="expense-item">
+                    <select class="category-select" id="category-${day}-${index}" onchange="updateCategory('${day}', ${index})">
+                        <option value="">Select Category</option>
+                        ${Object.keys(categories).map(cat => 
+                            `<option value="${cat}" ${item.category === cat ? 'selected' : ''}>
+                                ${categories[cat].icon} ${categories[cat].name}
+                            </option>`
+                        ).join('')}
+                    </select>
+                    <input type="number"
