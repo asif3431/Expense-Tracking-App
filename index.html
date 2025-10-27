@@ -3,16 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExpenseTracker Pro - Categorized Expense Management</title>
+    <title>ExpenseTracker Pro - Modern Expense Management</title>
     
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- jsPDF for PDF export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
-    <!-- html2canvas for capturing charts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
         * {
@@ -119,131 +113,59 @@
             opacity: 0.9;
         }
 
-        /* Expense Entry Section */
-        .expense-entry {
-            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
-            border-radius: 12px;
-            padding: 20px;
+        /* Input Grid */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
             margin-bottom: 25px;
-            border: 2px dashed var(--primary);
         }
 
-        .expense-day {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .day-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            font-weight: bold;
-            color: var(--primary);
-            font-size: 1.1rem;
-        }
-
-        .expense-items {
+        .input-group {
             display: flex;
             flex-direction: column;
-            gap: 10px;
         }
 
-        .expense-item {
-            display: grid;
-            grid-template-columns: 2fr 1fr auto;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .category-select {
-            padding: 10px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .category-select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(91, 33, 182, 0.1);
-        }
-
-        .amount-input {
-            padding: 10px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .amount-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(91, 33, 182, 0.1);
-        }
-
-        .add-item-btn {
-            padding: 8px 12px;
-            background: var(--success);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-        }
-
-        .add-item-btn:hover {
-            background: #059669;
-            transform: scale(1.1);
-        }
-
-        .remove-item-btn {
-            padding: 6px 10px;
-            background: var(--danger);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
+        .input-label {
             font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .expense-input {
+            width: 100%;
+            padding: 10px 10px 10px 30px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
             transition: all 0.3s ease;
         }
 
-        .remove-item-btn:hover {
-            background: #dc2626;
+        .expense-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(91, 33, 182, 0.1);
         }
-
-        /* Category Colors */
-        .category-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin: 2px;
-        }
-
-        .category-food { background: #fef3c7; color: #92400e; }
-        .category-fuel { background: #dbeafe; color: #1e40af; }
-        .category-medical { background: #fce7f3; color: #9f1239; }
-        .category-hotel { background: #ede9fe; color: #6b21a8; }
-        .category-rent { background: #ccfbf1; color: #065f46; }
-        .category-fees { background: #fee2e2; color: #991b1b; }
-        .category-other { background: #e5e7eb; color: #374151; }
 
         /* Buttons */
         .button-group {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
-            margin-top: 20px;
         }
 
         .btn {
@@ -290,16 +212,6 @@
             transform: translateY(-2px);
         }
 
-        .btn-warning {
-            background: var(--warning);
-            color: white;
-        }
-
-        .btn-warning:hover {
-            background: #d97706;
-            transform: translateY(-2px);
-        }
-
         /* Chart Container */
         .chart-container {
             position: relative;
@@ -328,45 +240,6 @@
             color: white;
         }
 
-        /* Category Summary */
-        .category-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .category-card {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            border: 2px solid var(--light);
-            transition: all 0.3s ease;
-        }
-
-        .category-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .category-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .category-name {
-            font-size: 0.9rem;
-            color: var(--gray);
-            margin-bottom: 5px;
-        }
-
-        .category-amount {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
         /* Summary */
         .summary-grid {
             display: grid;
@@ -393,41 +266,6 @@
             color: var(--primary);
         }
 
-        /* PDF Preview Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 20px;
-            border-radius: 12px;
-            width: 80%;
-            max-width: 600px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-        }
-
-        .close {
-            color: var(--gray);
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover {
-            color: var(--dark);
-        }
-
         /* Animations */
         @keyframes fadeInDown {
             from {
@@ -451,28 +289,18 @@
             }
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2rem;
             }
             
-            .expense-item {
+            .input-grid {
                 grid-template-columns: 1fr;
-                gap: 8px;
             }
             
             .stats-grid {
                 grid-template-columns: 1fr;
-            }
-            
-            .category-summary {
-                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
@@ -482,7 +310,7 @@
         <!-- Header -->
         <div class="header">
             <h1>💰 ExpenseTracker Pro</h1>
-            <p>Track your categorized weekly expenses</p>
+            <p>Track your weekly expenses with ease</p>
         </div>
 
         <!-- Stats Cards -->
@@ -496,8 +324,8 @@
                 <div class="stat-label">Daily Average</div>
             </div>
             <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #059669);">
-                <div class="stat-value" id="totalItems">0</div>
-                <div class="stat-label">Total Items</div>
+                <div class="stat-value" id="dayCount">7</div>
+                <div class="stat-label">Days Tracked</div>
             </div>
         </div>
 
@@ -505,11 +333,11 @@
         <div class="card">
             <h2 class="card-title">
                 <span>📊</span>
-                Enter Categorized Expenses
+                Enter Daily Expenses
             </h2>
             
-            <div class="expense-entry" id="expenseEntry">
-                <!-- Days will be generated here -->
+            <div class="input-grid" id="inputGrid">
+                <!-- Inputs will be generated here -->
             </div>
 
             <div class="button-group">
@@ -519,39 +347,24 @@
                 <button class="btn btn-success" onclick="saveData()">
                     <span>💾</span> Save Data
                 </button>
-                <button class="btn btn-warning" onclick="exportPDF()">
-                    <span>📄</span> Export PDF
-                </button>
                 <button class="btn btn-danger" onclick="clearAll()">
                     <span>🗑️</span> Clear All
                 </button>
             </div>
         </div>
 
-        <!-- Category Summary Card -->
-        <div class="card">
-            <h2 class="card-title">
-                <span>📈</span>
-                Category Breakdown
-            </h2>
-            
-            <div class="category-summary" id="categorySummary">
-                <!-- Category cards will be generated here -->
-            </div>
-        </div>
-
         <!-- Chart Card -->
-        <div class="card" id="chartCard">
+        <div class="card">
             <h2 class="card-title">
                 <span>📈</span>
                 Visual Analytics
             </h2>
             
             <div class="chart-tabs">
-                <button class="tab-btn active" onclick="switchChart('bar')">Daily Total</button>
-                <button class="tab-btn" onclick="switchChart('pie')">Category Distribution</button>
-                <button class="tab-btn" onclick="switchChart('line')">Trend Line</button>
-                <button class="tab-btn" onclick="switchChart('doughnut')">Category Donut</button>
+                <button class="tab-btn active" onclick="switchChart('bar')">Bar Chart</button>
+                <button class="tab-btn" onclick="switchChart('line')">Line Chart</button>
+                <button class="tab-btn" onclick="switchChart('pie')">Pie Chart</button>
+                <button class="tab-btn" onclick="switchChart('doughnut')">Doughnut</button>
             </div>
             
             <div class="chart-container">
@@ -576,97 +389,208 @@
                     <div class="summary-value" id="minDay">-</div>
                 </div>
                 <div class="summary-item">
-                    <div class="summary-label">Most Spent Category</div>
-                    <div class="summary-value" id="topCategory">-</div>
-                </div>
-                <div class="summary-item">
                     <div class="summary-label">Weekend Total</div>
                     <div class="summary-value" id="weekendTotal">₹0</div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PDF Export Modal -->
-    <div id="pdfModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closePDFModal()">&times;</span>
-            <h2>📄 Exporting to PDF</h2>
-            <p id="pdfStatus">Preparing your expense report...</p>
-            <div style="text-align: center; margin-top: 20px;">
-                <div id="pdfProgress" style="width: 100%; background: #e5e7eb; border-radius: 10px; height: 10px;">
-                    <div style="width: 0%; background: var(--primary); height: 100%; border-radius: 10px; transition: width 0.5s;"></div>
+                <div class="summary-item">
+                    <div class="summary-label">Weekday Average</div>
+                    <div class="summary-value" id="weekdayAvg">₹0</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Data Structure
+        // Data
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         const emojis = ['🌙', '💪', '🐪', '⚡', '🎉', '🏖️', '☀️'];
-        const categories = {
-            'food': { name: 'Food', icon: '🍔', color: '#fbbf24' },
-            'fuel': { name: 'Fuel', icon: '⛽', color: '#3b82f6' },
-            'medical': { name: 'Medical', icon: '💊', color: '#ec4899' },
-            'hotel': { name: 'Hotel', icon: '🏨', color: '#8b5cf6' },
-            'rent': { name: 'Rent', icon: '🏠', color: '#10b981' },
-            'fees': { name: 'Fees', icon: '💵', color: '#ef4444' },
-            'other': { name: 'Other', icon: '📦', color: '#6b7280' }
-        };
-        
-        let expenseData = {};
+        let expenses = [0, 0, 0, 0, 0, 0, 0];
         let myChart = null;
-        let categoryChart = null;
 
-        // Initialize expense data structure
-        function initializeData() {
-            days.forEach((day, index) => {
-                if (!expenseData[day]) {
-                    expenseData[day] = [];
-                }
-            });
-        }
-
-        // Initialize expense entry form
-        function initializeExpenseEntry() {
-            const container = document.getElementById('expenseEntry');
-            container.innerHTML = '';
+        // Initialize inputs
+        function initializeInputs() {
+            const inputGrid = document.getElementById('inputGrid');
+            inputGrid.innerHTML = '';
             
             days.forEach((day, index) => {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'expense-day';
-                dayDiv.innerHTML = `
-                    <div class="day-header">
-                        <span>${emojis[index]}</span>
-                        <span>${day}</span>
+                const inputGroup = document.createElement('div');
+                inputGroup.className = 'input-group';
+                inputGroup.innerHTML = `
+                    <label class="input-label">${emojis[index]} ${day}</label>
+                    <div class="input-wrapper">
+                        <span class="currency-symbol">₹</span>
+                        <input type="number" 
+                               class="expense-input" 
+                               id="day${index}" 
+                               placeholder="0"
+                               min="0"
+                               value="${expenses[index] || ''}"
+                               onchange="updateValue(${index})">
                     </div>
-                    <div class="expense-items" id="items-${day}">
-                        ${expenseData[day].map((item, itemIndex) => createExpenseItemHTML(day, itemIndex, item)).join('')}
-                    </div>
-                    <button class="add-item-btn" onclick="addExpenseItem('${day}')">+</button>
                 `;
-                container.appendChild(dayDiv);
+                inputGrid.appendChild(inputGroup);
             });
+        }
+
+        // Update value
+        function updateValue(index) {
+            const value = parseFloat(document.getElementById(`day${index}`).value) || 0;
+            expenses[index] = value;
+        }
+
+        // Calculate
+        function calculate() {
+            // Get all values
+            for (let i = 0; i < 7; i++) {
+                const value = parseFloat(document.getElementById(`day${i}`).value) || 0;
+                expenses[i] = value;
+            }
             
-            // Add at least one item per day if empty
-            days.forEach(day => {
-                if (expenseData[day].length === 0) {
-                    addExpenseItem(day);
+            // Calculate stats
+            const total = expenses.reduce((a, b) => a + b, 0);
+            const avg = total / 7;
+            
+            // Update display
+            document.getElementById('totalExpense').innerText = `₹${total.toLocaleString('en-IN')}`;
+            document.getElementById('avgExpense').innerText = `₹${Math.round(avg).toLocaleString('en-IN')}`;
+            
+            // Update summary
+            updateSummary();
+            
+            // Draw chart
+            drawChart('bar');
+        }
+
+        // Update summary
+        function updateSummary() {
+            const nonZero = expenses.filter(e => e > 0);
+            
+            if (nonZero.length > 0) {
+                const max = Math.max(...nonZero);
+                const min = Math.min(...nonZero);
+                const maxIndex = expenses.indexOf(max);
+                const minIndex = expenses.indexOf(min);
+                
+                document.getElementById('maxDay').innerText = days[maxIndex];
+                document.getElementById('minDay').innerText = days[minIndex];
+            }
+            
+            const weekendSum = expenses[5] + expenses[6];
+            const weekdaySum = expenses.slice(0, 5).reduce((a, b) => a + b, 0);
+            const weekdayAverage = weekdaySum / 5;
+            
+            document.getElementById('weekendTotal').innerText = `₹${weekendSum.toLocaleString('en-IN')}`;
+            document.getElementById('weekdayAvg').innerText = `₹${Math.round(weekdayAverage).toLocaleString('en-IN')}`;
+        }
+
+        // Draw chart
+        function drawChart(type) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            
+            if (myChart) {
+                myChart.destroy();
+            }
+            
+            myChart = new Chart(ctx, {
+                type: type,
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: 'Daily Expenses (₹)',
+                        data: expenses,
+                        backgroundColor: [
+                            'rgba(91, 33, 182, 0.7)',
+                            'rgba(124, 58, 237, 0.7)',
+                            'rgba(139, 92, 246, 0.7)',
+                            'rgba(6, 182, 212, 0.7)',
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(245, 158, 11, 0.7)',
+                            'rgba(239, 68, 68, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(91, 33, 182, 1)',
+                            'rgba(124, 58, 237, 1)',
+                            'rgba(139, 92, 246, 1)',
+                            'rgba(6, 182, 212, 1)',
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(239, 68, 68, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: type === 'pie' || type === 'doughnut'
+                        }
+                    },
+                    scales: type === 'bar' || type === 'line' ? {
+                        y: {
+                            beginAtZero: true
+                        }
+                    } : {}
                 }
             });
         }
 
-        // Create expense item HTML
-        function createExpenseItemHTML(day, index, item = {}) {
-            return `
-                <div class="expense-item">
-                    <select class="category-select" id="category-${day}-${index}" onchange="updateCategory('${day}', ${index})">
-                        <option value="">Select Category</option>
-                        ${Object.keys(categories).map(cat => 
-                            `<option value="${cat}" ${item.category === cat ? 'selected' : ''}>
-                                ${categories[cat].icon} ${categories[cat].name}
-                            </option>`
-                        ).join('')}
-                    </select>
-                    <input type="number"
+        // Switch chart
+        function switchChart(type) {
+            // Update active tab
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Draw new chart
+            drawChart(type);
+        }
+
+        // Save data
+        function saveData() {
+            const data = {
+                expenses: expenses,
+                date: new Date().toISOString()
+            };
+            localStorage.setItem('expenseData', JSON.stringify(data));
+            alert('✅ Data saved successfully!');
+        }
+
+        // Load data
+        function loadData() {
+            const saved = localStorage.getItem('expenseData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                expenses = data.expenses;
+                initializeInputs();
+                calculate();
+            }
+        }
+
+        // Clear all
+        function clearAll() {
+            if (confirm('Are you sure you want to clear all data?')) {
+                expenses = [0, 0, 0, 0, 0, 0, 0];
+                initializeInputs();
+                document.getElementById('totalExpense').innerText = '₹0';
+                document.getElementById('avgExpense').innerText = '₹0';
+                document.getElementById('maxDay').innerText = '-';
+                document.getElementById('minDay').innerText = '-';
+                document.getElementById('weekendTotal').innerText = '₹0';
+                document.getElementById('weekdayAvg').innerText = '₹0';
+                if (myChart) {
+                    myChart.destroy();
+                }
+            }
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            initializeInputs();
+            loadData();
+        };
+    </script>
+</body>
+</html>
