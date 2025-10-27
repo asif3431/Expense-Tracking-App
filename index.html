@@ -3,10 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Expense Tracker Pro - Easy Money Entry</title>
+    <title>ExpenseFlow - Professional Expense Management</title>
+    
     <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #22d3ee;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border-color: #334155;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -14,424 +58,652 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 10px;
+            transition: var(--transition);
         }
-        
-        .container {
-            max-width: 500px;
+
+        /* Loading Screen */
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Navigation */
+        .navbar {
+            background: var(--bg-card);
+            padding: 1rem 0;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .nav-container {
+            max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            border-radius: 25px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        
-        .header {
-            background: #2c3e50;
-            color: white;
-            padding: 25px;
-            text-align: center;
-            font-size: 26px;
-            font-weight: bold;
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
         }
-        
-        .content {
-            padding: 25px;
-        }
-        
-        /* MONEY ENTRY SECTION - VERY CLEAR */
-        .money-entry-section {
-            background: #fff9e6;
-            border: 3px dashed #ffc107;
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 30px;
-            position: relative;
-        }
-        
-        .money-entry-title {
-            text-align: center;
-            font-size: 22px;
-            font-weight: bold;
-            color: #d35400;
-            margin-bottom: 20px;
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            color: white;
+            font-size: 1.2rem;
         }
-        
-        .money-icon-large {
-            font-size: 35px;
-            animation: bounce 2s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        /* MONEY INPUT ROWS - SUPER CLEAR */
-        .money-input-row {
+
+        .nav-actions {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
-            background: white;
-            padding: 15px;
-            border-radius: 15px;
-            border: 3px solid #4caf50;
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.2);
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary);
+            color: white;
+            transform: rotate(180deg);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon.primary {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+
+        .stat-icon.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .stat-icon.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Main Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Expense Input Section */
+        .expense-input-card {
+            grid-column: span 2;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+
+        .day-input-group {
             position: relative;
         }
-        
-        .money-input-row::before {
-            content: "💰";
+
+        .day-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .currency-symbol {
             position: absolute;
-            left: -15px;
-            top: -15px;
-            font-size: 25px;
-            background: #4caf50;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .expense-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .expense-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .expense-input:hover {
+            border-color: var(--primary);
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            width: 30px;
-            height: 30px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 350px;
+            margin-top: 1rem;
+        }
+
+        .chart-type-selector {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.25rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-type-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .chart-type-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Summary Section */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .summary-item {
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .summary-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            border: 1px solid var(--border-color);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-icon {
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        
-        .day-label {
-            width: 120px;
-            font-weight: 700;
-            color: #2c3e50;
-            font-size: 18px;
+
+        .toast-icon.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        /* History Section */
+        .history-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .history-item {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
         }
-        
-        .day-emoji {
-            font-size: 24px;
+
+        .history-item:hover {
+            transform: translateX(5px);
+            border-color: var(--primary);
         }
-        
-        /* MONEY INPUT FIELD - VERY PROMINENT */
-        .money-input {
-            flex: 1;
-            padding: 15px;
-            border: 3px solid #ff9800;
-            border-radius: 15px;
-            font-size: 20px;
-            font-weight: bold;
-            text-align: right;
-            background: #fff3e0;
-            transition: all 0.3s ease;
-            outline: none;
+
+        .history-date {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
         }
-        
-        .money-input:focus {
-            border-color: #f44336;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.3);
-            transform: scale(1.02);
+
+        .history-amount {
+            font-weight: 700;
+            color: var(--primary);
         }
-        
-        /* RUPEE SYMBOL - BIG AND BOLD */
-        .rupee-symbol {
-            margin-left: 15px;
-            font-size: 28px;
-            font-weight: bold;
-            color: #f44336;
-            background: #ffebee;
-            padding: 5px 15px;
-            border-radius: 15px;
-            border: 2px solid #f44336;
-        }
-        
-        /* BUTTONS */
-        .button-grid {
+
+        /* Quick Actions */
+        .quick-actions {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 25px 0;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
         }
-        
-        button {
-            padding: 18px;
-            border: none;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: bold;
-            color: white;
+
+        .quick-action-btn {
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition);
+            text-align: center;
         }
-        
-        button:hover {
+
+        .quick-action-btn:hover {
+            border-color: var(--primary);
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
-        
-        .btn-calculate {
-            background: linear-gradient(135deg, #4caf50, #2e7d32);
-            grid-column: span 2;
-            font-size: 18px;
+
+        .quick-action-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
         }
-        
-        .btn-clear {
-            background: linear-gradient(135deg, #f44336, #c62828);
+
+        .quick-action-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
         }
-        
-        .btn-save {
-            background: linear-gradient(135deg, #2196f3, #0d47a1);
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .expense-input-card {
+                grid-column: span 1;
+            }
+            
+            .days-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
-        
-        /* SUMMARY SECTION */
-        .summary {
-            background: #e3f2fd;
-            border: 3px solid #2196f3;
-            border-radius: 20px;
-            padding: 25px;
-            margin: 25px 0;
-            text-align: center;
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
-        
-        .summary-text {
-            font-size: 22px;
-            font-weight: bold;
-            color: #2e7d32;
-            margin: 15px 0;
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 10px;
         }
-        
-        /* CHART SELECTOR */
-        .chart-selector {
-            background: #f5f5f5;
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            text-align: center;
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
         }
-        
-        .chart-dropdown {
-            width: 100%;
-            padding: 15px;
-            border: 3px solid #9e9e9e;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: 600;
-            background: white;
-            cursor: pointer;
-        }
-        
-        #chartContainer {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            margin: 20px 0;
-            min-height: 300px;
-            border: 2px solid #e0e0e0;
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            💰 Expense Tracker Pro
-        </div>
-        
-        <div class="content">
-            <!-- MONEY ENTRY SECTION - VERY CLEAR -->
-            <div class="money-entry-section">
-                <div class="money-entry-title">
-                    <span class="money-icon-large">💵</span>
-                    ENTER YOUR EXPENSES HERE
-                    <span class="money-icon-large">💵</span>
-                </div>
-                
-                <!-- MONEY INPUT ROWS - SUPER CLEAR -->
-                <div id="inputs"></div>
-            </div>
-            
-            <div class="button-grid">
-                <button class="btn-calculate" onclick="calculate()">
-                    📊 Calculate Summary
-                </button>
-                <button class="btn-clear" onclick="clearAll()">
-                    🗑️ Clear All
-                </button>
-                <button class="btn-save" onclick="saveData()">
-                    💾 Save Data
-                </button>
-            </div>
-            
-            <div class="summary">
-                <div class="summary-title">Weekly Summary</div>
-                <div id="summaryText" class="summary-text">Enter expenses above and tap Calculate</div>
-            </div>
-            
-            <div class="chart-selector">
-                <div style="font-weight: bold; margin-bottom: 15px;">📊 Select Chart Type</div>
-                <select class="chart-dropdown" id="chartTypeSelector" onchange="changeChartType()">
-                    <option value="bar">📊 Bar Chart</option>
-                    <option value="pie">🥧 Pie Chart</option>
-                    <option value="line">📈 Line Chart</option>
-                    <option value="doughnut">🍩 Doughnut Chart</option>
-                </select>
-            </div>
-            
-            <div id="chartContainer">
-                <canvas id="myChart"></canvas>
-            </div>
-        </div>
+<body data-theme="light">
+    <!-- Loading Screen -->
+    <div class="loader-wrapper" id="loader">
+        <div class="loader"></div>
     </div>
 
-    <script>
-        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        const dayEmojis = ['🌙', '💪', '🐪', '🎯', '🎉', '🌴', '☀️'];
-        const sampleData = [350, 300, 500, 250, 400, 300, 350];
-        
-        let currentChart = null;
-        let currentChartType = 'bar';
-        let currentData = [];
-        
-        function initInputs() {
-            const container = document.getElementById('inputs');
-            container.innerHTML = '';
-            
-            days.forEach((day, index) => {
-                const div = document.createElement('div');
-                div.className = 'money-input-row';
-                div.innerHTML = `
-                    <div class="day-label">
-                        <span class="day-emoji">${dayEmojis[index]}</span>
-                        ${day}
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <span>ExpenseFlow</span>
+            </a>
+            <div class="nav-actions">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Stats Cards -->
+        <div class="stats-grid animate-in">
+            <div class="stat-card">
+                <div class="stat-icon primary">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="stat-label">Total Expenses</div>
+                <div class="stat-value" id="totalExpense">₹0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon success">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="stat-label">Daily Average</div>
+                <div class="stat-value" id="dailyAverage">₹0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon warning">
+                    <i class="fas fa-calendar-week"></i>
+                </div>
+                <div class="stat-label">This Week</div>
+                <div class="stat-value" id="weekTotal">₹0</div>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Expense Input Card -->
+            <div class="card expense-input-card animate-in">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-coins"></i>
+                        Weekly Expenses
+                    </h2>
+                    <span style="font-size: 0.875rem; color: var(--text-secondary);">
+                        <i class="fas fa-info-circle"></i> Enter daily amounts
+                    </span>
+                </div>
+                
+                <div class="days-grid" id="daysGrid">
+                    <!-- Days will be inserted here -->
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="calculateExpenses()">
+                        <i class="fas fa-calculator"></i>
+                        Calculate
+                    </button>
+                    <button class="btn btn-secondary" onclick="saveData()">
+                        <i class="fas fa-save"></i>
+                        Save
+                    </button>
+                    <button class="btn btn-danger" onclick="clearAll()">
+                        <i class="fas fa-trash"></i>
+                        Clear
+                    </button>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <div class="quick-action-btn" onclick="fillSampleData()">
+                        <div class="quick-action-icon">📊</div>
+                        <div class="quick-action-label">Sample Data</div>
                     </div>
-                    <input type="number" id="day${index}" value="${sampleData[index]}" min="0" step="1" class="money-input" placeholder="0">
-                    <div class="rupee-symbol">₹</div>
-                `;
-                container.appendChild(div);
-            });
-        }
-        
-        function calculate() {
-            const expenses = [];
-            for (let i = 0; i < 7; i++) {
-                const value = parseFloat(document.getElementById(`day${i}`).value) || 0;
-                expenses.push(value);
-            }
-            
-            currentData = expenses;
-            
-            const total = expenses.reduce((a, b) => a + b, 0);
-            const average = total / 7;
-            
-            document.getElementById('summaryText').innerHTML = 
-                `Week: Total ₹${Math.round(total).toLocaleString('en-IN')}, Avg/day: ₹${Math.round(average)}`;
-            
-            drawChart(currentChartType, expenses);
-        }
-        
-        function changeChartType() {
-            if (currentData.length > 0) {
-                drawChart(document.getElementById('chartTypeSelector').value, currentData);
-            }
-        }
-        
-        function drawChart(type, data) {
-            if (currentChart) {
-                currentChart.destroy();
-            }
-            
-            const ctx = document.getElementById('myChart').getContext('2d');
-            
-            const chartColors = [
-                'rgba(52, 152, 219, 0.8)',
-                'rgba(231, 76, 60, 0.8)',
-                'rgba(243, 156, 18, 0.8)',
-                'rgba(39, 174, 96, 0.8)',
-                'rgba(155, 89, 182, 0.8)',
-                'rgba(230, 126, 34, 0.8)',
-                'rgba(22, 160, 133, 0.8)'
-            ];
-            
-            let config = {
-                type: type,
-                data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    datasets: [{
-                        label: 'Daily Expenses (₹)',
-                        data: data,
-                        backgroundColor: chartColors,
-                        borderColor: chartColors.map(c => c.replace('0.8', '1')),
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    }
-                }
-            };
-            
-            if (type === 'bar' || type === 'line') {
-                config.options.scales = {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return '₹' + value;
-                            }
-                        }
-                    }
-                };
-                
-                if (type === 'line') {
-                    config.data.datasets[0].tension = 0.4;
-                }
-            }
-            
-            currentChart = new Chart(ctx, config);
-        }
-        
-        function clearAll() {
-            if (confirm('Clear all expenses?')) {
-                for (let i = 0; i < 7; i++) {
-                    document.getElementById(`day${i}`).value = '';
-                }
-                document.getElementById('summaryText').innerHTML = 'Enter expenses above and tap Calculate';
-                
-                if (currentChart) {
-                    currentChart.destroy();
-                    currentChart = null;
-                }
-                currentData = [];
-            }
-        }
-        
-        function saveData() {
-            const expenses = [];
-            for (let i = 0; i < 7; i++) {
-                const value = document.getElementById(`day${i}`).value || '0';
-                expenses.push(value);
-            }
-            
-            localStorage.setItem('expenseData', JSON.stringify(expenses));
-            localStorage.setItem('savedDate', new Date().toLocaleString());
-            
-            alert('Data saved successfully!');
-        }
-        
-        // Initialize on load
-        window.onload = function() {
-            initInputs();
-            calculate(); // Auto-calculate with sample data
-        }
-    </script>
-</body>
-</html>
+                    <div class="quick-action-btn" onclick="exportData()">
+                        <div class="quick-action-icon">📥</div>
+                        <div class="quick-action-label">Export</div>
+                    </div>
