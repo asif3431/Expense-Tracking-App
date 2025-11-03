@@ -1,6 +1,3 @@
-Here's the complete updated code with categories, savings, user profile, settings, and about pages:
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,49 +40,6 @@ Here's the complete updated code with categories, savings, user profile, setting
             margin: 0 auto;
         }
 
-        /* Navigation */
-        .nav-container {
-            background: white;
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            animation: fadeInDown 0.5s ease;
-        }
-
-        .nav-tabs {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-        }
-
-        .nav-tab {
-            padding: 12px 20px;
-            background: var(--light);
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--gray);
-        }
-
-        .nav-tab:hover {
-            background: var(--primary-light);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .nav-tab.active {
-            background: var(--primary);
-            color: white;
-        }
-
         /* Header */
         .header {
             text-align: center;
@@ -103,16 +57,6 @@ Here's the complete updated code with categories, savings, user profile, setting
         .header p {
             font-size: 1.1rem;
             opacity: 0.9;
-        }
-
-        /* Pages */
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
         }
 
         /* Cards */
@@ -202,7 +146,7 @@ Here's the complete updated code with categories, savings, user profile, setting
             font-weight: bold;
         }
 
-        .expense-input, .form-input, .form-select {
+        .expense-input {
             width: 100%;
             padding: 10px 10px 10px 30px;
             border: 2px solid #e2e8f0;
@@ -211,11 +155,7 @@ Here's the complete updated code with categories, savings, user profile, setting
             transition: all 0.3s ease;
         }
 
-        .form-input, .form-select {
-            padding: 10px;
-        }
-
-        .expense-input:focus, .form-input:focus, .form-select:focus {
+        .expense-input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(91, 33, 182, 0.1);
@@ -272,16 +212,6 @@ Here's the complete updated code with categories, savings, user profile, setting
             transform: translateY(-2px);
         }
 
-        .btn-secondary {
-            background: var(--secondary);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #0891b2;
-            transform: translateY(-2px);
-        }
-
         /* Chart Container */
         .chart-container {
             position: relative;
@@ -293,7 +223,6 @@ Here's the complete updated code with categories, savings, user profile, setting
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
-            flex-wrap: wrap;
         }
 
         .tab-btn {
@@ -337,364 +266,6 @@ Here's the complete updated code with categories, savings, user profile, setting
             color: var(--primary);
         }
 
-        /* Category Styles */
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .category-card {
-            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 4px solid var(--primary);
-            transition: all 0.3s ease;
-        }
-
-        .category-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .category-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .category-name {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--dark);
-        }
-
-        .category-icon {
-            font-size: 1.5rem;
-        }
-
-        .category-amount {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary);
-            margin: 10px 0;
-        }
-
-        .category-percentage {
-            font-size: 0.9rem;
-            color: var(--gray);
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            transition: width 0.5s ease;
-        }
-
-        /* Expense List */
-        .expense-list {
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .expense-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: var(--light);
-            border-radius: 8px;
-            margin-bottom: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .expense-item:hover {
-            background: #e2e8f0;
-            transform: translateX(5px);
-        }
-
-        .expense-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .expense-icon {
-            font-size: 1.5rem;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: white;
-            border-radius: 8px;
-        }
-
-        .expense-details h4 {
-            color: var(--dark);
-            margin-bottom: 5px;
-        }
-
-        .expense-details p {
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        .expense-amount {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--danger);
-        }
-
-        .delete-btn {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            margin-left: 10px;
-        }
-
-        .delete-btn:hover {
-            background: #dc2626;
-        }
-
-        /* Profile Styles */
-        .profile-header {
-            text-align: center;
-            padding: 30px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            border-radius: 12px;
-            color: white;
-            margin-bottom: 20px;
-        }
-
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            margin: 0 auto 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .profile-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .info-card {
-            background: var(--light);
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        .info-card h3 {
-            color: var(--primary);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .info-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .info-item:last-child {
-            border-bottom: none;
-        }
-
-        .info-label {
-            color: var(--gray);
-            font-weight: 600;
-        }
-
-        .info-value {
-            color: var(--dark);
-            font-weight: 500;
-        }
-
-        /* Savings Styles */
-        .savings-goal {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-
-        .goal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .goal-amount {
-            font-size: 2.5rem;
-            font-weight: bold;
-        }
-
-        .goal-progress {
-            width: 100%;
-            height: 20px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-
-        .goal-progress-fill {
-            height: 100%;
-            background: white;
-            transition: width 0.5s ease;
-        }
-
-        .goal-stats {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        /* Settings Styles */
-        .settings-section {
-            margin-bottom: 30px;
-        }
-
-        .settings-section h3 {
-            color: var(--primary);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .setting-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: var(--light);
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-
-        .setting-label {
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .setting-description {
-            font-size: 0.9rem;
-            color: var(--gray);
-            margin-top: 5px;
-        }
-
-        .toggle-switch {
-            position: relative;
-            width: 50px;
-            height: 26px;
-            background: #ccc;
-            border-radius: 13px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .toggle-switch.active {
-            background: var(--success);
-        }
-
-        .toggle-slider {
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 20px;
-            height: 20px;
-            background: white;
-            border-radius: 50%;
-            transition: transform 0.3s;
-        }
-
-        .toggle-switch.active .toggle-slider {
-            transform: translateX(24px);
-        }
-
-        /* About Styles */
-        .about-section {
-            margin-bottom: 30px;
-        }
-
-        .about-hero {
-            text-align: center;
-            padding: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white;
-            border-radius: 12px;
-            margin-bottom: 30px;
-        }
-
-        .about-hero h2 {
-            font-size: 2rem;
-            margin-bottom: 15px;
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .feature-card {
-            background: var(--light);
-            padding: 25px;
-            border-radius: 12px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
-        }
-
-        .feature-card h3 {
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        .feature-card p {
-            color: var(--gray);
-            line-height: 1.6;
-        }
-
         /* Animations */
         @keyframes fadeInDown {
             from {
@@ -718,15 +289,6 @@ Here's the complete updated code with categories, savings, user profile, setting
             }
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .header h1 {
@@ -740,36 +302,6 @@ Here's the complete updated code with categories, savings, user profile, setting
             .stats-grid {
                 grid-template-columns: 1fr;
             }
-
-            .nav-tabs {
-                flex-wrap: nowrap;
-            }
-
-            .profile-avatar {
-                width: 100px;
-                height: 100px;
-                font-size: 2.5rem;
-            }
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--light);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-light);
         }
     </style>
 </head>
@@ -778,34 +310,287 @@ Here's the complete updated code with categories, savings, user profile, setting
         <!-- Header -->
         <div class="header">
             <h1>💰 ExpenseTracker Pro</h1>
-            <p>Track your expenses, achieve your goals</p>
+            <p>Track your weekly expenses with ease</p>
         </div>
 
-        <!-- Navigation -->
-        <div class="nav-container">
-            <div class="nav-tabs">
-                <button class="nav-tab active" onclick="switchPage('dashboard')">
-                    <span>📊</span> Dashboard
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalExpense">₹0</div>
+                <div class="stat-label">Total Expenses</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                <div class="stat-value" id="avgExpense">₹0</div>
+                <div class="stat-label">Daily Average</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #059669);">
+                <div class="stat-value" id="dayCount">7</div>
+                <div class="stat-label">Days Tracked</div>
+            </div>
+        </div>
+
+        <!-- Input Card -->
+        <div class="card">
+            <h2 class="card-title">
+                <span>📊</span>
+                Enter Daily Expenses
+            </h2>
+            
+            <div class="input-grid" id="inputGrid">
+                <!-- Inputs will be generated here -->
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="calculate()">
+                    <span>📊</span> Calculate
                 </button>
-                <button class="nav-tab" onclick="switchPage('categories')">
-                    <span>📁</span> Categories
+                <button class="btn btn-success" onclick="saveData()">
+                    <span>💾</span> Save Data
                 </button>
-                <button class="nav-tab" onclick="switchPage('savings')">
-                    <span>💎</span> Savings
-                </button>
-                <button class="nav-tab" onclick="switchPage('profile')">
-                    <span>👤</span> Profile
-                </button>
-                <button class="nav-tab" onclick="switchPage('settings')">
-                    <span>⚙️</span> Settings
-                </button>
-                <button class="nav-tab" onclick="switchPage('about')">
-                    <span>ℹ️</span> About
+                <button class="btn btn-danger" onclick="clearAll()">
+                    <span>🗑️</span> Clear All
                 </button>
             </div>
         </div>
 
-        <!-- Dashboard Page -->
-        <div id="dashboard" class="page active">
-            <!-- Stats Cards -->
-            <div class="stats-grid
+        <!-- Chart Card -->
+        <div class="card">
+            <h2 class="card-title">
+                <span>📈</span>
+                Visual Analytics
+            </h2>
+            
+            <div class="chart-tabs">
+                <button class="tab-btn active" onclick="switchChart('bar')">Bar Chart</button>
+                <button class="tab-btn" onclick="switchChart('line')">Line Chart</button>
+                <button class="tab-btn" onclick="switchChart('pie')">Pie Chart</button>
+                <button class="tab-btn" onclick="switchChart('doughnut')">Doughnut</button>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Summary Card -->
+        <div class="card">
+            <h2 class="card-title">
+                <span>📋</span>
+                Weekly Summary
+            </h2>
+            
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-label">Highest Day</div>
+                    <div class="summary-value" id="maxDay">-</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Lowest Day</div>
+                    <div class="summary-value" id="minDay">-</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Weekend Total</div>
+                    <div class="summary-value" id="weekendTotal">₹0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Weekday Average</div>
+                    <div class="summary-value" id="weekdayAvg">₹0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const emojis = ['🌙', '💪', '🐪', '⚡', '🎉', '🏖️', '☀️'];
+        let expenses = [0, 0, 0, 0, 0, 0, 0];
+        let myChart = null;
+
+        // Initialize inputs
+        function initializeInputs() {
+            const inputGrid = document.getElementById('inputGrid');
+            inputGrid.innerHTML = '';
+            
+            days.forEach((day, index) => {
+                const inputGroup = document.createElement('div');
+                inputGroup.className = 'input-group';
+                inputGroup.innerHTML = `
+                    <label class="input-label">${emojis[index]} ${day}</label>
+                    <div class="input-wrapper">
+                        <span class="currency-symbol">₹</span>
+                        <input type="number" 
+                               class="expense-input" 
+                               id="day${index}" 
+                               placeholder="0"
+                               min="0"
+                               value="${expenses[index] || ''}"
+                               onchange="updateValue(${index})">
+                    </div>
+                `;
+                inputGrid.appendChild(inputGroup);
+            });
+        }
+
+        // Update value
+        function updateValue(index) {
+            const value = parseFloat(document.getElementById(`day${index}`).value) || 0;
+            expenses[index] = value;
+        }
+
+        // Calculate
+        function calculate() {
+            // Get all values
+            for (let i = 0; i < 7; i++) {
+                const value = parseFloat(document.getElementById(`day${i}`).value) || 0;
+                expenses[i] = value;
+            }
+            
+            // Calculate stats
+            const total = expenses.reduce((a, b) => a + b, 0);
+            const avg = total / 7;
+            
+            // Update display
+            document.getElementById('totalExpense').innerText = `₹${total.toLocaleString('en-IN')}`;
+            document.getElementById('avgExpense').innerText = `₹${Math.round(avg).toLocaleString('en-IN')}`;
+            
+            // Update summary
+            updateSummary();
+            
+            // Draw chart
+            drawChart('bar');
+        }
+
+        // Update summary
+        function updateSummary() {
+            const nonZero = expenses.filter(e => e > 0);
+            
+            if (nonZero.length > 0) {
+                const max = Math.max(...nonZero);
+                const min = Math.min(...nonZero);
+                const maxIndex = expenses.indexOf(max);
+                const minIndex = expenses.indexOf(min);
+                
+                document.getElementById('maxDay').innerText = days[maxIndex];
+                document.getElementById('minDay').innerText = days[minIndex];
+            }
+            
+            const weekendSum = expenses[5] + expenses[6];
+            const weekdaySum = expenses.slice(0, 5).reduce((a, b) => a + b, 0);
+            const weekdayAverage = weekdaySum / 5;
+            
+            document.getElementById('weekendTotal').innerText = `₹${weekendSum.toLocaleString('en-IN')}`;
+            document.getElementById('weekdayAvg').innerText = `₹${Math.round(weekdayAverage).toLocaleString('en-IN')}`;
+        }
+
+        // Draw chart
+        function drawChart(type) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            
+            if (myChart) {
+                myChart.destroy();
+            }
+            
+            myChart = new Chart(ctx, {
+                type: type,
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: 'Daily Expenses (₹)',
+                        data: expenses,
+                        backgroundColor: [
+                            'rgba(91, 33, 182, 0.7)',
+                            'rgba(124, 58, 237, 0.7)',
+                            'rgba(139, 92, 246, 0.7)',
+                            'rgba(6, 182, 212, 0.7)',
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(245, 158, 11, 0.7)',
+                            'rgba(239, 68, 68, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(91, 33, 182, 1)',
+                            'rgba(124, 58, 237, 1)',
+                            'rgba(139, 92, 246, 1)',
+                            'rgba(6, 182, 212, 1)',
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(239, 68, 68, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: type === 'pie' || type === 'doughnut'
+                        }
+                    },
+                    scales: type === 'bar' || type === 'line' ? {
+                        y: {
+                            beginAtZero: true
+                        }
+                    } : {}
+                }
+            });
+        }
+
+        // Switch chart
+        function switchChart(type) {
+            // Update active tab
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Draw new chart
+            drawChart(type);
+        }
+
+        // Save data
+        function saveData() {
+            const data = {
+                expenses: expenses,
+                date: new Date().toISOString()
+            };
+            localStorage.setItem('expenseData', JSON.stringify(data));
+            alert('✅ Data saved successfully!');
+        }
+
+        // Load data
+        function loadData() {
+            const saved = localStorage.getItem('expenseData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                expenses = data.expenses;
+                initializeInputs();
+                calculate();
+            }
+        }
+
+        // Clear all
+        function clearAll() {
+            if (confirm('Are you sure you want to clear all data?')) {
+                expenses = [0, 0, 0, 0, 0, 0, 0];
+                initializeInputs();
+                document.getElementById('totalExpense').innerText = '₹0';
+                document.getElementById('avgExpense').innerText = '₹0';
+                document.getElementById('maxDay').innerText = '-';
+                document.getElementById('minDay').innerText = '-';
+                document.getElementById('weekendTotal').innerText = '₹0';
+                document.getElementById('weekdayAvg').innerText = '₹0';
+                if (myChart) {
+                    myChart.destroy();
+                }
+            }
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            initializeInputs();
+            loadData();
+        };
+    </script>
+</body>
+</html>
